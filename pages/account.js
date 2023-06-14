@@ -119,7 +119,7 @@ export default function AccountPage() {
                           </>
                         )}
                         {orders.length > 0 &&
-                          orders.map((o) => <SingleOrder {...o} />)}
+                          orders.map((o) => <SingleOrder {...o} key={o._id} />)}
                       </div>
                     )}
                   </>
