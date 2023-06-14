@@ -1,7 +1,7 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Order } from "@/models/Order";
 const stripe = require("stripe")(process.env.STRIPE_SK);
-import { buffer } from "micro";
+import getRawBody from "raw-body";
 
 const endpointSecret =
   "whsec_636ebed4255e613099ab66157cb3d2f6f42c70897e40d00c341d27334f907da3";
@@ -13,11 +13,8 @@ export default async function handler(req, res) {
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(
-      await buffer(req),
-      sig,
-      endpointSecret
-    );
+    const rawBody = await getRawBody(req);
+    event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
   } catch (err) {
     res.status(400).send(`Webhook Error: ${err.message}`);
     return;
