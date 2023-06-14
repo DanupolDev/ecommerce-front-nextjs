@@ -20,15 +20,11 @@ export default async function handler(req, res) {
   }
 
   // Handle the event
+  const orderId = event.data.object.metadata.orderID;
+  await Order.findByIdAndUpdate(orderId, {
+    paid: true,
+  });
 
-  const data = event.data.object;
-  const orderId = data.metadata.orderID;
-  const paid = data.payment_status === "paid";
-  if (orderId && paid) {
-    await Order.findByIdAndUpdate(orderId, {
-      paid: true,
-    });
-  }
   console.log(`Unhandled event type ${event.type}`);
 
   res.status(200).send("OK");
